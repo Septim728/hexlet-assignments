@@ -24,16 +24,10 @@ public final class App {
        app.get("/users", ctx -> {
           page = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
           per = ctx.queryParamAsClass("per", Integer.class).getOrDefault(5);
-          int start  = (page - 1) * per;
-          int end =  Math.min(start + page, USERS.size());
 
-          var list = USERS.subList(start, end);
-           // Преобразуем список пользователей в JSON
-           ObjectMapper objectMapper = new ObjectMapper();
-           String jsonResponse = objectMapper.writeValueAsString(list);
-
-           // Отправляем JSON в ответ
-           ctx.contentType("application/json").result(jsonResponse);
+          var offset = (page - 1) * per;
+          List<Map<String, String>> sliceOfUsers = USERS.subList(offset, offset + per);
+          ctx.json(sliceOfUsers);
        });
 
         return app;
