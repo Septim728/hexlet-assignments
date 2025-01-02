@@ -1,5 +1,6 @@
 package exercise;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import org.eclipse.jetty.server.Authentication;
 
@@ -27,7 +28,12 @@ public final class App {
           int end =  Math.min(start + page, USERS.size());
 
           var list = USERS.subList(start, end);
-          ctx.json(list);
+           // Преобразуем список пользователей в JSON
+           ObjectMapper objectMapper = new ObjectMapper();
+           String jsonResponse = objectMapper.writeValueAsString(list);
+
+           // Отправляем JSON в ответ
+           ctx.contentType("application/json").result(jsonResponse);
        });
 
         return app;
